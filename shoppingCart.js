@@ -1,4 +1,3 @@
-// 商品列表 JSON 数据
 var carProducts = [
   {
     "id": 1,
@@ -43,7 +42,6 @@ var carProducts = [
     "checked": false
   }
 ]
-//使用插入节点的方式，把所有商品添加到购物车中
 var tbody = document.getElementsByTagName("tbody")[0];
 for (let i = 0; i < carProducts.length; i++) {
   var newTr = document.createElement("tr");
@@ -76,7 +74,7 @@ myTable.addEventListener("click", clickCheckbox, false);
 var staCount = 0;//全局变量，统计文具总数
 var allStaPrice = 0;//全局变量，统计文具总价
 function clickCheckbox(Eve) {
-  var currentCheckbox = Eve.target || window.event.srcElement;//兼容IE浏览器
+  var currentCheckbox = Eve.target || window.event.srcElement;
   var isChecked = currentCheckbox.checked;
   //当选中某个文具时，最后一行共计数量和价格会发生变化；同理取消选中会发生相反变化；
   if (currentCheckbox.name === "select-single-stationery") {
@@ -105,7 +103,6 @@ function clickCheckbox(Eve) {
         allStaPrice = allStaPrice + parseFloat(totalPriceColumn[j].innerHTML);
         staCount = staCount + parseInt(countColumn[j].innerHTML);
       }
-
     } else {
       for (let j = 0; j < selectColumn.length; j++) {
         selectColumn[j].children[0].checked = false;
@@ -164,7 +161,6 @@ function increaseStationery(currentBtn) {
     writeLastRow(staCount, allStaPrice);
   }
 }
-
 //用来更新最后一行“共计数量和价格”的内容
 function writeLastRow(staCount, allStaPrice) {
   var totalPayment = document.getElementById("totalPayment");
