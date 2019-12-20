@@ -51,17 +51,22 @@ window.onload = function () {
     var newTdPrice = document.createElement("td");
     var newTdCount = document.createElement("td");
     var newTdTotalPrice = document.createElement("td");
-    newTdSelect.className = 'selectColumn';
-    newTdPrice.className = 'priceColumn';
-    newTdCount.className = 'countColumn';
+    newTdSelect.className = "selectColumn";
+    newTdPrice.className = "priceColumn";
+    newTdCount.className = "countColumn";
     newTdTotalPrice.className = "totalPriceColumn";
-    newTdSelect.innerHTML = '<input type="checkbox" name="select-single-stationery">';
+    newTdSelect.innerHTML =
+      '<input type="checkbox" name="select-single-stationery">';
     newTdName.innerHTML = carProducts[i]["name"];
     newTdPrice.innerHTML = carProducts[i]["price"];
-    newTdCount.innerHTML = '<button name="minus-btn">-</button>' +
-      '<span>' + carProducts[i]["count"] + '</span>' +
+    newTdCount.innerHTML =
+      '<button name="minus-btn">-</button>' +
+      "<span>" +
+      carProducts[i]["count"] +
+      "</span>" +
       '<button name="plus-btn">+</button>';
-    newTdTotalPrice.innerHTML = carProducts[i]["price"] * carProducts[i]["count"];
+    newTdTotalPrice.innerHTML =
+      carProducts[i]["price"] * carProducts[i]["count"];
     newTr.appendChild(newTdSelect);
     newTr.appendChild(newTdName);
     newTr.appendChild(newTdPrice);
@@ -72,13 +77,13 @@ window.onload = function () {
   //选中/取消选中单个文具&全选/取消全选所有文具
   var myTable = document.getElementsByTagName("table")[0];
   myTable.addEventListener("click", clickCheckbox, false);
-  var staCount = 0;//全局变量，统计文具总数
-  var allStaPrice = 0;//全局变量，统计文具总价
+  var staCount = 0; //全局变量，统计文具总数
+  var allStaPrice = 0; //全局变量，统计文具总价
   function clickCheckbox(Eve) {
     var currentCheckbox = Eve.target || window.event.srcElement;
     var isChecked = currentCheckbox.checked;
     //当选中某个文具时，最后一行共计数量和价格会发生变化；同理取消选中会发生相反变化；
-    if (currentCheckbox.name === "select-single-stationery") {
+    if ("select-single-stationery" === currentCheckbox.name) {
       var currentTr = currentCheckbox.parentNode.parentNode;
       var totalPriceTd = currentTr.lastElementChild;
       var totalPriceTdNum = parseFloat(totalPriceTd.innerHTML);
@@ -90,9 +95,9 @@ window.onload = function () {
         staCount = staCount - countTdNum;
         allStaPrice = allStaPrice - totalPriceTdNum;
       }
-      writeLastRow(staCount, allStaPrice);//修改最后一行共计数量&价格
+      writeLastRow(staCount, allStaPrice); //修改最后一行共计数量&价格
       //当全选中时，所有行文具的都被选中，且最后一行共计数量和价格会发生变化；同理取消选中会发生相反变化；
-    } else if (currentCheckbox.name === "select-all-stationery") {
+    } else if ("select-all-stationery" === currentCheckbox.name) {
       var selectColumn = myTable.getElementsByClassName("selectColumn");
       var totalPriceColumn = myTable.getElementsByClassName("totalPriceColumn");
       var countColumn = myTable.getElementsByTagName("span");
@@ -109,17 +114,16 @@ window.onload = function () {
           selectColumn[j].children[0].checked = false;
         }
       }
-      writeLastRow(staCount, allStaPrice);//修改最后一行共计数量&价格
+      writeLastRow(staCount, allStaPrice); //修改最后一行共计数量&价格
     }
   }
   //为加减按钮添加时间监听
   myTable.addEventListener("click", addOrDecreaseStationery, false);
   function addOrDecreaseStationery(Eve) {
     var currentBtn = Eve.target || window.event.srcElement;
-    if (currentBtn.name === "minus-btn") {
+    if ("minus-btn" === currentBtn.name) {
       decreaseStationery(currentBtn);
-    }
-    else if (currentBtn.name === "plus-btn") {
+    } else if ("plus-btn" === currentBtn.name) {
       increaseStationery(currentBtn);
     }
   }
@@ -135,7 +139,7 @@ window.onload = function () {
     var priceTdNum = parseFloat(priceTd.innerHTML);
     totalPriceTd.innerHTML = countTdNum * priceTdNum;
     //本行商品个数为0时删除本行商品
-    if (countTdNum === 0) {
+    if (0 === countTdNum) {
       tbody.removeChild(countTd.parentNode);
     }
     //当本行的文具被选中时，才能改写表尾总价和总数
@@ -168,4 +172,4 @@ window.onload = function () {
     var content = "共计" + staCount + "件商品，" + allStaPrice + " ￥";
     totalPayment.innerHTML = content;
   }
-}
+};
