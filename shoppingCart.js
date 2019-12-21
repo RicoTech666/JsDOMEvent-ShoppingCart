@@ -61,9 +61,9 @@ window.onload = function () {
     newTdPrice.innerHTML = carProducts[i]["price"];
     newTdCount.innerHTML =
       '<button name="minus-btn">-</button>' +
-      "<span>" +
+      '<span class ="count-column-content">' +
       carProducts[i]["count"] +
-      "</span>" +
+      '</span>' +
       '<button name="plus-btn">+</button>';
     newTdTotalPrice.innerHTML =
       carProducts[i]["price"] * carProducts[i]["count"];
@@ -79,8 +79,8 @@ window.onload = function () {
   myTable.addEventListener("click", clickCheckbox, false);
   var staCount = 0; //全局变量，统计文具总数
   var allStaPrice = 0; //全局变量，统计文具总价
-  function clickCheckbox(Eve) {
-    var currentCheckbox = Eve.target || window.event.srcElement;
+  function clickCheckbox(event) {
+    var currentCheckbox = event.target || window.event.srcElement;
     var isChecked = currentCheckbox.checked;
     //当选中某个文具时，最后一行共计数量和价格会发生变化；同理取消选中会发生相反变化；
     if ("select-single-stationery" === currentCheckbox.name) {
@@ -95,12 +95,12 @@ window.onload = function () {
         staCount = staCount - countTdNum;
         allStaPrice = allStaPrice - totalPriceTdNum;
       }
-      writeLastRow(staCount, allStaPrice); //修改最后一行共计数量&价格
+      updateNeedToPayAndTotalCount(staCount, allStaPrice); //修改最后一行共计数量&价格
       //当全选中时，所有行文具的都被选中，且最后一行共计数量和价格会发生变化；同理取消选中会发生相反变化；
     } else if ("select-all-stationery" === currentCheckbox.name) {
       var selectColumn = myTable.getElementsByClassName("selectColumn");
       var totalPriceColumn = myTable.getElementsByClassName("totalPriceColumn");
-      var countColumn = myTable.getElementsByTagName("span");
+      var countColumn = myTable.getElementsByClassName("count-column-content");
       staCount = 0;
       allStaPrice = 0;
       if (isChecked) {
@@ -114,13 +114,13 @@ window.onload = function () {
           selectColumn[j].children[0].checked = false;
         }
       }
-      writeLastRow(staCount, allStaPrice); //修改最后一行共计数量&价格
+      updateNeedToPayAndTotalCount(staCount, allStaPrice); //修改最后一行共计数量&价格
     }
   }
   //为加减按钮添加时间监听
   myTable.addEventListener("click", addOrDecreaseStationery, false);
-  function addOrDecreaseStationery(Eve) {
-    var currentBtn = Eve.target || window.event.srcElement;
+  function addOrDecreaseStationery(event) {
+    var currentBtn = event.target || window.event.srcElement;
     if ("minus-btn" === currentBtn.name) {
       decreaseStationery(currentBtn);
     } else if ("plus-btn" === currentBtn.name) {
@@ -146,7 +146,7 @@ window.onload = function () {
     if (isChecked) {
       staCount = staCount - 1;
       allStaPrice = allStaPrice - priceTdNum;
-      writeLastRow(staCount, allStaPrice);
+      updateNeedToPayAndTotalCount(staCount, allStaPrice);
     }
   }
   //加按钮
@@ -163,13 +163,21 @@ window.onload = function () {
     if (currentTr.getElementsByTagName("input")[0].checked) {
       staCount = staCount + 1;
       allStaPrice = allStaPrice + priceTdNum;
-      writeLastRow(staCount, allStaPrice);
+      updateNeedToPayAndTotalCount(staCount, allStaPrice);
     }
   }
   //用来更新最后一行“共计数量和价格”的内容
-  function writeLastRow(staCount, allStaPrice) {
-    var totalPayment = document.getElementById("totalPayment");
-    var content = "共计" + staCount + "件商品，" + allStaPrice + " ￥";
-    totalPayment.innerHTML = content;
+  function updateNeedToPayAndTotalCount(staCount, allStaPrice) {
+    var totalCount = document.getElementsByClassName("total-count")[0];
+    var needToPay = document.getElementsByClassName("need-to-pay")[0];
+    totalCount.innerHTML = staCount;
+    needToPay.innerHTML = allStaPrice;
   }
 };
+//改最后一个函数名和内容
+//加一个全局计算的函数
+//用字符串模板的方式加新内容
+//rowindex
+//forEach加新内容
+//js里面加css类名还是要用css命名规范
+//Continous Delivery

@@ -1,35 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Shopping Cart Demo</title>
-  <script src="./shoppingCart.js"></script>
-</head>
-
-<body>
-  <table border="1">
-    <caption>文具店购物车</caption>
-    <thead>
-      <tr>
-        <th>选择</th>
-        <th>商品名称</th>
-        <th>商品单价(￥)</th>
-        <th>商品数量</th>
-        <th>总价(￥)</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <td><label>全选<input type="checkbox" name="select-all-stationery"></label></td>
-        <td colspan="4" id="totalPayment">共计0件商品，0￥</td>
-      </tr>
-    </tfoot>
-    <tbody>
-    </tbody>
-  </table>
-</body>
-
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Shopping Cart Demo</title>
+		<script src="./shoppingCart.js"></script>
+	</head>
+	<body>
+		<table border="1">
+			<caption>
+				文具店购物车
+			</caption>
+			<thead>
+				<tr>
+					<th>选择</th>
+					<th>商品名称</th>
+					<th>商品单价(￥)</th>
+					<th>商品数量</th>
+					<th>总价(￥)</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<td>
+						<label>
+							全选
+							<input type="checkbox" name="select-all-stationery" />
+						</label>
+					</td>
+					<td colspan="4">
+						共计<span class="total-count">0</span>件商品，<span class="need-to-pay">0</span>￥
+					</td>
+				</tr>
+			</tfoot>
+			<tbody></tbody>
+		</table>
+	</body>
 </html>
