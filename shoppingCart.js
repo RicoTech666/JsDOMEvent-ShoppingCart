@@ -48,7 +48,7 @@ function initShoppingCart() {
   var tbody = document.getElementsByTagName("tbody")[0];
   carProducts.forEach(stationary => {
     var productInfo = document.createElement("tr");
-		productInfo.innerHTML = `<td class="selectColumn">
+		productInfo.innerHTML = `<td class="select-column">
       <input type="checkbox" name="select-single-stationery"></td>
       <td>${stationary["name"]}</td>
       <td class="price-column">${stationary["price"]}</td>
@@ -64,49 +64,57 @@ function initShoppingCart() {
 var staCount = 0; 
 var allStaPrice = 0; 
 var myTable = document.getElementsByTagName("table")[0];
-myTable.addEventListener("click", clickCheckbox, false);
 
+myTable.addEventListener("click", clickCheckbox, false);
 function clickCheckbox(event) {
-	var currentCheckbox = event.target || window.event.srcElement;
+  var currentCheckbox = event.target || window.event.srcElement;
+  var currentInfoRow = currentCheckbox.parentNode.parentNode; 
 	var isChecked = currentCheckbox.checked;
-	//当选中某个文具时，最后一行共计数量和价格会发生变化；同理取消选中会发生相反变化；
+	
 	if ("select-single-stationery" === currentCheckbox.name) {
-		var currentTr = currentCheckbox.parentNode.parentNode;
-		var totalPriceTd = currentTr.lastElementChild;
-		var totalPriceTdNum = parseFloat(totalPriceTd.innerHTML);
-		var countTdNum = parseInt(currentTr.querySelector("span").innerHTML);
-		if (isChecked) {
-			staCount = staCount + countTdNum;
-			allStaPrice = allStaPrice + totalPriceTdNum;
-		} else {
-			staCount = staCount - countTdNum;
-			allStaPrice = allStaPrice - totalPriceTdNum;
-		}
-		updateNeedToPayAndTotalCount(staCount, allStaPrice); 
+    selectSingleStationery(isChecked,currentInfoRow);
 	} else if ("select-all-stationery" === currentCheckbox.name) {
-		var selectColumn = myTable.getElementsByClassName("selectColumn");
-		var totalPriceColumn = myTable.getElementsByClassName("total-price-column");
-		var countColumn = myTable.getElementsByClassName("count-column-content");
-		staCount = 0;
-		allStaPrice = 0;
-		if (isChecked) {
-			for (let j = 0; j < totalPriceColumn.length; j++) {
-				selectColumn[j].children[0].checked = true;
-				allStaPrice = allStaPrice + parseFloat(totalPriceColumn[j].innerHTML);
-				staCount = staCount + parseInt(countColumn[j].innerHTML);
-			}
-		} else {
-			for (let j = 0; j < selectColumn.length; j++) {
-				selectColumn[j].children[0].checked = false;
-			}
-		}
-		updateNeedToPayAndTotalCount(staCount, allStaPrice); //修改最后一行共计数量&价格
-	}
+    selectAllStationery(isChecked);
+}
 }
 
-myTable.addEventListener("click", addOrDecreaseStationery, false);
+function selectSingleStationery(checkedStatus, stationaryInfoRow) {
+  var totalPricePerStationary = stationaryInfoRow.lastElementChild;
+  var totalPricePerStaNum = parseFloat(totalPricePerStationary.innerHTML);
+  var countPerSta = parseInt(stationaryInfoRow.querySelector("span").innerHTML);
+  if (checkedStatus) {
+    staCount = staCount + countPerSta;
+    allStaPrice = allStaPrice + totalPricePerStaNum;
+  } else {
+    staCount = staCount - countPerSta;
+    allStaPrice = allStaPrice - totalPricePerStaNum;
+  }
+  updateNeedToPayAndTotalCount(staCount, allStaPrice); 
+}
 
-function addOrDecreaseStationery(event) {
+function selectAllStationery(checkedStatus) {
+  var selectColumn = myTable.getElementsByClassName("select-column");
+  var totalPriceColumn = myTable.getElementsByClassName("total-price-column");
+  var countColumn = myTable.getElementsByClassName("count-column-content");
+  staCount = 0;
+  allStaPrice = 0;
+  if (checkedStatus) {
+    for (let j = 0; j < totalPriceColumn.length; j++) {
+      selectColumn[j].children[0].checked = true;
+      allStaPrice = allStaPrice + parseFloat(totalPriceColumn[j].innerHTML);
+      staCount = staCount + parseInt(countColumn[j].innerHTML);
+    }
+  } else {
+    for (let j = 0; j < selectColumn.length; j++) {
+      selectColumn[j].children[0].checked = false;
+    }
+  }
+  updateNeedToPayAndTotalCount(staCount, allStaPrice); 
+}
+
+
+myTable.addEventListener("click", increaseOrDecreaseStationery, false);
+function increaseOrDecreaseStationery(event) {
 	var currentBtn = event.target || window.event.srcElement;
 	if ("minus-btn" === currentBtn.name) {
 		decreaseStationery(currentBtn);
@@ -116,41 +124,42 @@ function addOrDecreaseStationery(event) {
 }
 
 function decreaseStationery(currentBtn) {
-	var countTd = currentBtn.parentNode;
-	var currentTr = countTd.parentNode;
-  var isChecked = currentTr.getElementsByTagName("input")[0].checked;
-	var countTdNum = parseInt(countTd.children[1].innerHTML) - 1;
-	countTd.children[1].innerHTML = countTdNum;
-	var totalPriceTd = currentTr.lastElementChild;
-	var priceTd = currentTr.getElementsByClassName("price-column")[0];
-	var priceTdNum = parseFloat(priceTd.innerHTML);
-	totalPriceTd.innerHTML = countTdNum * priceTdNum;
+	var countNode = currentBtn.parentNode;
+	var currentStationaryInfoRow = countNode.parentNode;
+  var isChecked = currentStationaryInfoRow.getElementsByTagName("input")[0].checked;
+  console.log(isChecked);
+	var countNumberPerRow = parseInt(countNode.children[1].innerHTML) - 1;
+	countNode.children[1].innerHTML = countNumberPerRow;
+	var totalPricePerStationary = currentStationaryInfoRow.lastElementChild;
+	var priceNode = currentStationaryInfoRow.getElementsByClassName("price-column")[0];
+	var priceNumberPerRow = parseFloat(priceNode.innerHTML);
+	totalPricePerStationary.innerHTML = countNumberPerRow * priceNumberPerRow;
 	
-	if (0 === countTdNum) {
+	if (0 === countNumberPerRow) {
     var tbody = document.getElementsByTagName("tbody")[0];
-		tbody.removeChild(countTd.parentNode);
+		tbody.removeChild(countNode.parentNode);
 	}
 	
 	if (isChecked) {
 		staCount = staCount - 1;
-		allStaPrice = allStaPrice - priceTdNum;
+		allStaPrice = allStaPrice - priceNumberPerRow;
 		updateNeedToPayAndTotalCount(staCount, allStaPrice);
 	}
 }
 
 function increaseStationery(currentBtn) {
-	var countTd = currentBtn.parentNode;
-	var currentTr = countTd.parentNode;
-	var countTdNum = parseInt(countTd.children[1].innerHTML) + 1;
-	countTd.children[1].innerHTML = countTdNum;
-	var totalPriceTd = currentTr.lastElementChild;
-	var priceTd = currentTr.getElementsByClassName("price-column")[0];
-	var priceTdNum = parseFloat(priceTd.innerHTML);
-	totalPriceTd.innerHTML = countTdNum * priceTdNum;
+	var countNode = currentBtn.parentNode;
+	var currentStationaryInfoRow = countNode.parentNode;
+	var countNumberPerRow = parseInt(countNode.children[1].innerHTML) + 1;
+	countNode.children[1].innerHTML = countNumberPerRow;
+	var totalPricePerStationary = currentStationaryInfoRow.lastElementChild;
+	var priceNode = currentStationaryInfoRow.getElementsByClassName("price-column")[0];
+	var priceNumberPerRow = parseFloat(priceNode.innerHTML);
+	totalPricePerStationary.innerHTML = countNumberPerRow * priceNumberPerRow;
 	
-	if (currentTr.getElementsByTagName("input")[0].checked) {
+	if (currentStationaryInfoRow.getElementsByTagName("input")[0].checked) {
 		staCount = staCount + 1;
-		allStaPrice = allStaPrice + priceTdNum;
+		allStaPrice = allStaPrice + priceNumberPerRow;
 		updateNeedToPayAndTotalCount(staCount, allStaPrice);
 	}
 }
@@ -161,8 +170,3 @@ function updateNeedToPayAndTotalCount(staCount, allStaPrice) {
 	totalCount.innerHTML = staCount;
 	needToPay.innerHTML = allStaPrice;
 }
-
-//加一个全局计算的函数
-//rowindex
-
-
